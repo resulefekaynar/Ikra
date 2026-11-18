@@ -1,5 +1,5 @@
 // IKRA — çevrimdışı önbellek (araclar/web_hazirla.py üretir; elle düzenleme)
-const SURUM = 'ikra-55ba339bd4f9';
+const SURUM = 'ikra-4ea00170e0fa';
 const DOSYALAR = [
  "./",
  ".last_build_id",
