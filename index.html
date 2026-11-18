@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base href="/ikra/">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="IKRA — kitap okuyarak dil öğren / учите язык, читая книги">
+
+  <!-- iPhone: ana ekrandan açılınca Safari çubukları olmadan, tam ekran -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="IKRA">
+  <meta name="theme-color" content="#000000">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+
+  <link rel="icon" type="image/png" href="favicon.png"/>
+  <title>IKRA</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    html, body { margin: 0; height: 100%; background: #101418; }
+    #yukleniyor { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; }
+    #yukleniyor img { width: 72px; height: auto; opacity: .9; }
+  </style>
+</head>
+<body>
+  <div id="yukleniyor"><img src="icons/Icon-192.png" alt="IKRA"></div>
+  <script>
+    // Çevrimdışı çalışma: uygulama dosyalarını önbelleğe alan servis çalışanı (ikra_sw.js)
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('ikra_sw.js').catch(function (e) { console.warn('SW:', e); });
+      });
+    }
+    window.addEventListener('flutter-first-frame', function () {
+      var y = document.getElementById('yukleniyor');
+      if (y) y.remove();
+    });
+  </script>
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+</html>
