@@ -1,15 +1,18 @@
 // IKRA — çevrimdışı önbellek (araclar/web_hazirla.py üretir; elle düzenleme)
-const SURUM = 'ikra-4ea00170e0fa';
+const SURUM = 'ikra-19265b3530be';
 const DOSYALAR = [
  "./",
  ".last_build_id",
  "assets/AssetManifest.bin",
  "assets/AssetManifest.bin.json",
  "assets/assets/2.0x/gn.png",
+ "assets/assets/2.0x/gn_cizgi.png",
  "assets/assets/3.0x/gn.png",
+ "assets/assets/3.0x/gn_cizgi.png",
  "assets/assets/fonts/NotoSans-Bold.ttf",
  "assets/assets/fonts/NotoSans-Regular.ttf",
  "assets/assets/gn.png",
+ "assets/assets/gn_cizgi.png",
  "assets/FontManifest.json",
  "assets/fonts/fallback/Roboto-Regular.ttf",
  "assets/fonts/MaterialIcons-Regular.otf",
