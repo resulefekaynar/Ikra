@@ -1,5 +1,5 @@
 // IKRA — çevrimdışı önbellek (araclar/web_hazirla.py üretir; elle düzenleme)
-const SURUM = 'ikra-9bf60df3cc6f';
+const SURUM = 'ikra-3e303287ee2e';
 const DOSYALAR = [
  "./",
  ".last_build_id",
@@ -13,10 +13,13 @@ const DOSYALAR = [
  "assets/assets/fonts/NotoSans-Regular.ttf",
  "assets/assets/gn.png",
  "assets/assets/gn_cizgi.png",
+ "assets/assets/gunluk/kk.json",
+ "assets/assets/gunluk/tr.json",
  "assets/FontManifest.json",
  "assets/fonts/fallback/Roboto-Regular.ttf",
  "assets/fonts/MaterialIcons-Regular.otf",
  "assets/packages/cupertino_icons/assets/CupertinoIcons.ttf",
+ "assets/packages/flutter_local_notifications_web/web/notifications_service_worker.js",
  "assets/packages/wakelock_plus/assets/no_sleep.js",
  "assets/shaders/ink_sparkle.frag",
  "assets/shaders/stretch_effect.frag",
@@ -25,6 +28,7 @@ const DOSYALAR = [
  "favicon.png",
  "flutter.js",
  "flutter_bootstrap.js",
+ "gizlilik.html",
  "icons/apple-touch-icon.png",
  "icons/Icon-192.png",
  "icons/Icon-512.png",
@@ -114,4 +118,40 @@ self.addEventListener('fetch', (e) => {
       return yanit;
     }).catch(() => caches.match('./')))
   );
+});
+
+// --- Günlük hatırlatıcı (Web Push) -------------------------------------------------------------------
+// hatirlatici/worker.js her gün boş bir push gönderir; metni uygulamanın yazdığı plan verir
+// (lib/veri/hatirlatici_web.dart). Önbellek adı 'ikra-' ile başlamaz: yukarıdaki sürüm temizliği silmesin.
+const PLAN_ONBELLEGI = 'bildirim-plani';
+
+async function gununBildirimi() {
+  let b = null;
+  try {
+    const yanit = await (await caches.open(PLAN_ONBELLEGI))
+      .match(new URL('__bildirim__/plan.json', self.registration.scope).href);
+    if (yanit) {
+      const plan = await yanit.json();
+      const t = new Date();
+      const gun = t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-'
+        + String(t.getDate()).padStart(2, '0');
+      b = (plan.gunler && plan.gunler[gun]) || plan.yedek || null;
+    }
+  } catch (_) {}
+  b = b || { baslik: 'IKRA', govde: 'Günün kelimesi seni bekliyor — hemen öğren!' };
+  // iPhone: her push bir bildirim göstermeli, yoksa abonelik iptal edilir
+  await self.registration.showNotification(b.baslik, {
+    body: b.govde, tag: 'ikra-gunluk', icon: 'icons/Icon-192.png', badge: 'icons/Icon-192.png',
+  });
+}
+
+self.addEventListener('push', (e) => e.waitUntil(gununBildirimi()));
+
+self.addEventListener('notificationclick', (e) => {
+  e.notification.close();
+  e.waitUntil((async () => {
+    const pencereler = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    for (const p of pencereler) if ('focus' in p) return p.focus();
+    return self.clients.openWindow(self.registration.scope);
+  })());
 });
